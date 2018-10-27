@@ -1,0 +1,44 @@
+version: v1.0
+name: Performous Build on Ubuntu 18.04 
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+blocks:
+  - name: Fetch dependencies
+    task:
+      jobs:
+        - name: Get dependencies.
+          commands:
+             - checkout
+             - sudo apt-get -y update
+             - sudo apt-get -y install cmake gettext help2man clang gcc-7 g++-7 libepoxy-dev libsdl2-dev libcairo2-dev libpango1.0-dev librsvg2-dev libboost-all-dev libavcodec-dev libavformat-dev libswscale-dev libswresample-dev libpng-dev libjpeg-dev libxml++2.6-dev portaudio19-dev libopencv-dev libportmidi-dev libjsoncpp-dev libqrencode-dev libicu-dev libcpprest-dev libglm-dev
+             - echo "Installing Performous Dependencies..."
+             - echo "done"
+
+  - name: Build
+    task:
+      jobs:
+        - name: GCC-7 Build
+          env_vars:
+             - name: CC
+               value: gcc-7
+             - name: CXX
+               value: g++-7
+          commands:
+             - checkout
+             - cd performous 
+             - mkdir build.gcc && cd build.gcc
+             - make VERBOSE=1
+        - name: Clang-6.0 Build
+          env_vars:
+            - name: CC
+              value: clang
+            - name: CXX
+              value: clang++
+          commands:
+             - checkout
+             - cd performous 
+             - mkdir build.gcc && cd build.gcc
+             - make VERBOSE=1
